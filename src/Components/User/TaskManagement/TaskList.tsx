@@ -1,8 +1,8 @@
 import React from "react";
 import TaskCard from "./TaskCard/TaskCard";
-import { Notification } from "../../../types";
 import { User } from "../../../redux/types";
 import { Task } from "../../../Interface/User/Itask";
+import { Notification } from "../../../Interface/User/Inotification";
 
 interface TaskListProps {
   tasks: Task[];

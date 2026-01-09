@@ -1,8 +1,8 @@
 import React from "react";
 import { Avatar, Divider } from "@nextui-org/react";
-import { Contact } from "../../../../../types";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import { ColorScheme } from "./useColorScheme";
+import { Contact } from "../../../../../Interface/User/Icontact";
 
 interface UserUserDetailsProps {
   selectedContact: Contact;

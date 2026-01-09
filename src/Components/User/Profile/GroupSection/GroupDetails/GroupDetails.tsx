@@ -1,12 +1,13 @@
+import { lazy, Suspense } from "react";
 import { Card, CardHeader, CardBody, Divider, Spinner } from "@nextui-org/react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useGroupDetails } from "../../../../../Hooks/User/useGroupDetails";
 import { GroupCover } from "./GroupCover";
 import { GroupHeader } from "./GroupHeader";
-import TaskManagement from "../../../TaskManagement/TaskManagemnt";
 import { GroupInfoGrid } from "./GroupInfoGrid";
 import { GroupRequestsSection } from "./GroupRequestsSection";
 import { GroupMembersSection } from "./GroupMembersSection";
+const TaskManagement = lazy(() => import("../../../TaskManagement/TaskManagemnt"));
 
 export const GroupDetails = () => {
   const {
@@ -58,7 +59,9 @@ export const GroupDetails = () => {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <TaskManagement context="group" currentUser={currentUser} contextData={group} />
+                    <Suspense fallback={<Spinner size="lg" label="Loading Tasks..." />}>
+                      <TaskManagement context="group" currentUser={currentUser} contextData={group} />
+                    </Suspense>
                   </CardBody>
                 </Card>
               </div>

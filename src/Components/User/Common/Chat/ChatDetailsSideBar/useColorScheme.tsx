@@ -1,5 +1,5 @@
-import { Contact } from "../../../../../types";
 import { BadgeCheckIcon, UsersIcon } from "lucide-react";
+import { Contact } from "../../../../../Interface/User/Icontact";
 
 export interface ColorScheme {
   gradient: string;
