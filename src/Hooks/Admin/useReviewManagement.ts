@@ -7,7 +7,7 @@ import {
   deselect_review,
 } from "../../Service/Review.Service";
 import toast from "react-hot-toast";
-import { Review } from "../../Interface/Ireview";
+import { Review } from "../../Interface/User/Ireview";
 
 
 export function useReviewManagement() {

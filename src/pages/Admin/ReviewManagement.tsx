@@ -4,7 +4,7 @@ import { BsStar } from "react-icons/bs";
 import DataTable from "../../Components/ReusableComponents/DataTable";
 import SearchBar from "../../Components/ReusableComponents/SearchBar";
 import { useReviewManagement } from "../../Hooks/Admin/useReviewManagement";
-import { Review } from "../../Interface/Ireview";
+import { Review } from "../../Interface/User/Ireview";
 
 
 const ReviewManagement = () => {
