@@ -1,0 +1,226 @@
+import { useState, useEffect, useCallback, useMemo } from "react";
+import toast from "react-hot-toast";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Spinner,
+  Button,
+} from "@nextui-org/react";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
+import DataTable from "../../Components/ReusableComponents/DataTable";
+import { downloadSalesReport, getSalesReport } from "../../Service/Mentor.Service";
+
+interface MentorBreakdown {
+  id: string;
+  mentorId: string;
+  name: string;
+  email: string;
+  collaborations: number;
+  mentorEarnings: number;
+  platformFees: number;
+}
+
+interface SalesReport {
+  period: string;
+  totalRevenue: number;
+  platformRevenue: number;
+  mentorRevenue: number;
+  mentorBreakdown: MentorBreakdown[];
+}
+
+const SalesReport = () => {
+  const [report, setReport] = useState<SalesReport | null>(null);
+  const [period, setPeriod] = useState("1month");
+  const [loading, setLoading] = useState(false);
+
+  const fetchReport = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getSalesReport(period);
+
+      const mapped = response.mentorBreakdown.map((m: MentorBreakdown) => ({
+        ...m,
+        id: m.mentorId,
+      }));
+
+      setReport({
+        ...response,
+        mentorBreakdown: mapped,
+      });
+    } catch (error) {
+      toast.error("Failed to fetch sales report");
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [period]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
+
+  // Chart Data
+  const chartData = useMemo(() => {
+    if (!report) {
+      return [
+        { name: "Total Revenue", amount: 0, fill: "#3b82f6" },
+        { name: "Platform Revenue", amount: 0, fill: "#10b981" },
+        { name: "Mentor Revenue", amount: 0, fill: "#f59e0b" },
+      ];
+    }
+
+    return [
+      { name: "Total Revenue", amount: report.totalRevenue, fill: "#3b82f6" },
+      { name: "Platform Revenue", amount: report.platformRevenue, fill: "#10b981" },
+      { name: "Mentor Revenue", amount: report.mentorRevenue, fill: "#f59e0b" },
+    ];
+  }, [report]);
+
+  // DataTable Columns
+  const columns = useMemo(
+    () => [
+      { key: "name", label: "Name" },
+      { key: "email", label: "Email" },
+      { key: "collaborations", label: "Sessions" },
+      {
+        key: "mentorEarnings",
+        label: "Earnings (₹)",
+        render: (row: MentorBreakdown) => row.mentorEarnings.toFixed(2),
+      },
+      {
+        key: "platformFees",
+        label: "Platform Fees (₹)",
+        render: (row: MentorBreakdown) => row.platformFees.toFixed(2),
+      },
+    ],
+    []
+  );
+
+  return (
+    <div className="p-8 max-w-6xl mx-auto">
+      <Card className="shadow-md">
+        {/* Header */}
+        <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h1 className="text-2xl font-bold">Sales Report</h1>
+
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              disabled={loading}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="1month">Last 30 Days</option>
+              <option value="1year">Last 1 Year</option>
+              <option value="5years">Last 5 Years</option>
+            </select>
+
+            <Button
+              color="primary"
+              size="lg"
+              onPress={() => downloadSalesReport(period)}
+              isDisabled={loading || !report}
+              startContent={<span className="text-xl">📄</span>}
+              className="font-medium"
+            >
+              Download PDF Report
+            </Button>
+          </div>
+        </CardHeader>
+
+        <CardBody>
+          {loading ? (
+            <div className="flex justify-center">
+              <Spinner size="lg" />
+            </div>
+          ) : !report ? (
+            <p>No data available.</p>
+          ) : (
+            <>
+              {/* Revenue Chart */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-4">
+                  Revenue Overview (
+                  {period === "1month"
+                    ? "Last 30 Days"
+                    : period === "1year"
+                    ? "Last 1 Year"
+                    : "Last 5 Years"}
+                  )
+                </h3>
+
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis
+                        label={{
+                          value: "Amount (₹)",
+                          angle: -90,
+                          position: "insideLeft",
+                        }}
+                      />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="amount" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Revenue Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <Card>
+                  <CardBody>
+                    <h3 className="text-lg font-semibold">Total Revenue</h3>
+                    <p className="text-2xl">₹{report.totalRevenue.toFixed(2)}</p>
+                  </CardBody>
+                </Card>
+
+                <Card>
+                  <CardBody>
+                    <h3 className="text-lg font-semibold">Platform Revenue</h3>
+                    <p className="text-2xl">₹{report.platformRevenue.toFixed(2)}</p>
+                  </CardBody>
+                </Card>
+
+                <Card>
+                  <CardBody>
+                    <h3 className="text-lg font-semibold">Mentor Revenue</h3>
+                    <p className="text-2xl">₹{report.mentorRevenue.toFixed(2)}</p>
+                  </CardBody>
+                </Card>
+              </div>
+
+              <DataTable<MentorBreakdown>
+                data={report.mentorBreakdown}
+                columns={columns}
+                loading={loading}
+                total={report.mentorBreakdown.length}
+                page={1}
+                limit={report.mentorBreakdown.length}
+                onPageChange={() => {}}
+                emptyMessage="No mentor earnings data found"
+              />
+            </>
+          )}
+        </CardBody>
+      </Card>
+    </div>
+  );
+};
+
+export default SalesReport;
