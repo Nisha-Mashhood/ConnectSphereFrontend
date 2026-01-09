@@ -1,4 +1,4 @@
-import Logo from "../../assets/logoMain.jpg";
+import Logo from "../../assets/LogoMain.jpg";
 
 export const ConnectSphereLogo = () => {
   return (
