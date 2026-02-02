@@ -26,7 +26,12 @@ export function useLogin() {
   const handleLogin = async (values: LoginFormValues) => {
     setIsLoading(true);
     try {
-      const { user, otpId } = await login({ ...values, role: "user"});
+      const result = await login({ ...values, role: "user"});
+      if (!result) {
+        return;
+      }
+
+      const { user, otpId } = result;
 
       if (user.role === "admin") {
         toast.error("Invalid credentials for user login");
