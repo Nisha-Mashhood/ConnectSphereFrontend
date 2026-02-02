@@ -3,7 +3,7 @@ import { get_selected_reviews } from '../../../Service/Review.Service';
 import toast from 'react-hot-toast';
 
 interface User {
-  username: string;
+  name: string;
   email: string;
   profilePic?: string;
   jobTitle?: string;
@@ -12,7 +12,8 @@ interface User {
 
 interface Review {
   reviewId: string;
-  userId: User;
+  user: User;
+  userId:string;
   rating: number;
   comment: string;
   isApproved: boolean;
@@ -29,7 +30,8 @@ const Reviews: React.FC = () => {
       try {
         setLoading(true);
         const response = await get_selected_reviews();
-        setReviews(response?.data || []);
+        console.log("Reviews : ",response);
+        setReviews(response || []);
       } catch (error) {
         console.error('Failed to fetch selected reviews:', error);
         toast.error('Failed to load reviews');
@@ -77,9 +79,9 @@ const Reviews: React.FC = () => {
                   <blockquote className="rounded-lg bg-gray-50 p-6 shadow-sm sm:p-8">
                     <div className="flex items-center gap-4">
                       <img
-                        alt={review.userId.username}
+                        alt={review.user.name}
                         src={
-                          review.userId.profilePic ||
+                          review.user.profilePic ||
                           'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80'
                         }
                         className="size-14 rounded-full object-cover"
@@ -89,11 +91,11 @@ const Reviews: React.FC = () => {
                           {renderStars(review.rating)}
                         </div>
                         <p className="mt-0.5 text-lg font-medium text-gray-900">
-                          {review.userId.username}
+                          {review.user.name}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {review.userId.jobTitle || 'Not specified'} |{' '}
-                          {review.userId.role === 'mentor' ? 'Mentor' : 'User'}
+                          {review.user.jobTitle || 'Not specified'} |{' '}
+                          {review.user.role === 'mentor' ? 'Mentor' : 'User'}
                         </p>
                       </div>
                     </div>
