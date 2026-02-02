@@ -40,10 +40,11 @@ interface CallCreatedEvent {
 
 interface GroupCallStart {
   groupId: string;
+  groupName: string;
   starterId: string;
-  callType: string;
-  roomName: string;
   starterName: string;
+  roomName: string;
+  callType: "audio" | "video";
 }
 
 interface GroupCallJoin {
@@ -53,7 +54,7 @@ interface GroupCallJoin {
 
 interface GroupCallEnd {
   groupId: string; 
-  callType: string
+  callType: "audio" | "video";
 }
 
 export class SocketService {
@@ -91,7 +92,7 @@ export class SocketService {
   connect(userId: string, token: string) {
     this.userId = userId;
 
-    this.socket = io("http://localhost:3000", {
+    this.socket = io(import.meta.env.VITE_SOCKET_URL, {
       auth: { token, userId },
       path: "/socket.io",
       reconnection: true,
@@ -665,6 +666,37 @@ public offCallCreated(callback: (data: CallCreatedEvent) => void): void {
   public offGroupCallEnded( callback: (data: GroupCallEnd) => void ): void {
     this.socket?.off("groupCallEnded", callback);
   }
+
+  public joinAllMyGroupRooms(userId: string): void {
+    if (!this.socket) {
+      console.error("Cannot join all group rooms: Socket not connected");
+      return;
+    }
+    console.log(`Emitting joinAllMyGroupRooms for user: ${userId}`);
+    this.socket.emit("joinAllMyGroupRooms", { userId });
+  }
+
+  public leaveAllMyGroupRooms(userId: string): void {
+    if (!this.socket) {
+      console.error("Cannot leave all group rooms: Socket not connected");
+      return;
+    }
+    console.log(`Emitting leaveAllMyGroupRooms for user: ${userId}`);
+    this.socket.emit("leaveAllMyGroupRooms", { userId });
+  }
+
+  // Listen for server confirmation
+  public onJoinedAllGroupRooms(callback: (data: { groupIds: string[] }) => void): void {
+    this.socket?.on("joinedAllGroupRooms", (data) => {
+      console.log("Received joinedAllGroupRooms:", data);
+      callback(data);
+    });
+  }
+
+  public offJoinedAllGroupRooms(callback: (data: { groupIds: string[] }) => void): void {
+    this.socket?.off("joinedAllGroupRooms", callback);
+  }
+
 }
 
 export const socketService = new SocketService();

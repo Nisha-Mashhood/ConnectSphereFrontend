@@ -21,12 +21,17 @@ import {
 
 import { getChatKey } from "../../Components/User/Common/Chat/utils/contactUtils";
 import { useChatCall } from "../../Hooks/User/Chat/OneToOneCall/useChatCall";
+import { useGroupCall } from "../../Hooks/User/Chat/GroupCall/useChatGroupCall";
+
 
 const Chat: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isDetailsSidebarOpen, setIsDetailsSidebarOpen] = useState(false);
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state: RootState) => state.user);
+    const activeGroupCall = useSelector( (state: RootState) => state.call.activeGroupCall );
+
+    console.log("ActiveGroupCall : ",activeGroupCall);
   
   // Contacts Hook
   const {
@@ -59,6 +64,11 @@ const Chat: React.FC = () => {
     getChatKey,
   });
 
+  const groupCall = useGroupCall({
+      currentUserId: currentUser?.id,
+      selectedContact,
+    });
+
   // Initial contact selection
   useEffect(() => {
     if (sortedContacts.length > 0 && !selectedContact) {
@@ -81,6 +91,17 @@ const Chat: React.FC = () => {
       socketService.leaveChat(currentUser.id);
     };
   }, [currentUser?.id, dispatch, refetchUnreadCounts]);
+
+  useEffect(() => {
+    if (!activeGroupCall || selectedContact) return;
+
+    const groupContact = sortedContacts.find(
+       (c) => c.type === "group" && c.groupId === activeGroupCall.groupId);
+
+    if (groupContact) {
+      handleContactSelect(groupContact);
+    }
+  }, [activeGroupCall, selectedContact, sortedContacts, handleContactSelect]);
 
     const closeSidebar = () => setIsSidebarOpen(false);
     const closeDetailsSidebar = () => setIsDetailsSidebarOpen(false);
@@ -114,6 +135,7 @@ const Chat: React.FC = () => {
             toggleSidebar={() => setIsSidebarOpen(true)}
             toggleDetailsSidebar={() => setIsDetailsSidebarOpen(true)}
             call={call}
+            groupCall={groupCall}
           />
 
           {/* CHAT MESSAGES — passes message state */}
@@ -189,6 +211,14 @@ const Chat: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* {activeGroupCall?.groupId && activeGroupCall?.roomName && currentUser && (
+              <AgoraGroupCallOverlay
+                channelName={activeGroupCall.roomName}
+                userId={currentUser.id}
+                onClose={groupCall.endGroupCall}
+              />
+            )} */}
     </div>
   );
 };

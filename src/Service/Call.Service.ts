@@ -12,3 +12,12 @@ export const getCallLogs = async (): Promise<ICallLog[]> => {
     throw new Error(error.response?.data?.message || "Failed to fetch call logs");
   }
 };
+
+export const fetchGroupCallToken = async (groupId: string) => {
+  try{
+    const res = await axiosInstance.get(`/callLog/generateToken/${groupId}`);
+    return res.data.data;
+  }catch(error){
+    handleError(error);
+  }
+};

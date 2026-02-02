@@ -29,9 +29,13 @@ const IncomingCallBar: React.FC = () => {
     ? incomingGroupCall?.starterName || "Group Call"
     : incomingCall?.senderName || "Someone";
 
-  const callTypeText = isGroupCall 
-    ? "Group Video" 
-    : incomingCall?.callType === "video" ? "Video" : "Audio";
+  const callTypeText = isGroupCall
+    ? incomingGroupCall?.callType === "audio"
+      ? "Group Audio"
+      : "Group Video"
+    : incomingCall?.callType === "video"
+    ? "Video"
+    : "Audio";
 
   const handleAccept = () => {
     if (isGroupCall && incomingGroupCall) {
@@ -42,7 +46,9 @@ const IncomingCallBar: React.FC = () => {
       navigate(`/chat/group/${incomingGroupCall.groupId}`);
       dispatch(setActiveGroupCall({
         groupId: incomingGroupCall.groupId,
+        groupName: incomingGroupCall.groupName,
         roomName: incomingGroupCall.roomName,
+        callType: incomingGroupCall.callType,
       }));
       dispatch(clearIncomingGroupCall());
     } else if (incomingCall || incomingCall?.offerData) {
@@ -111,6 +117,7 @@ const IncomingCallBar: React.FC = () => {
       </div>
     </div>
   );
+
 };
 
 export default IncomingCallBar;

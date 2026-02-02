@@ -13,19 +13,19 @@ interface UseGroupCallParams {
 
 export const useGroupCall = ({ currentUserId, selectedContact }: UseGroupCallParams) => {
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
-  const activeGroupCall = useSelector((state: RootState) => state.call.activeGroupCall);
   const [isGroupCallActive, setIsGroupCallActive] = useState(false);
   const dispatch = useDispatch();
 
   // Start call
-  const startGroupCall = useCallback(() => {
+  const startGroupCall = useCallback((callType: "audio" | "video") => {
     if (!selectedContact || selectedContact.type !== "group") return;
+    console.log("Starter Id : ",currentUserId)
     const groupId = selectedContact.groupId;
     const roomName = `group-${groupId}`;
     socketService.emit("groupCallStarted", {
       groupId,
       starterId: currentUserId,
-      callType: "video",
+      callType,
       roomName,
       starterName: currentUser?.name || "You",
     });
@@ -33,7 +33,7 @@ export const useGroupCall = ({ currentUserId, selectedContact }: UseGroupCallPar
       groupId,
       userId: currentUserId,
     });
-    dispatch(setActiveGroupCall({ groupId, roomName }));
+    dispatch(setActiveGroupCall({ groupId, roomName, groupName: selectedContact.name, callType, }));
     setIsGroupCallActive(true);
     toast.success("Group video call started!");
   }, [currentUserId, selectedContact, currentUser?.name, dispatch]);
@@ -48,11 +48,6 @@ export const useGroupCall = ({ currentUserId, selectedContact }: UseGroupCallPar
     dispatch(clearActiveGroupCall());
   }, [selectedContact, dispatch]);
 
-  useEffect(() => {
-    if (activeGroupCall && activeGroupCall.groupId === selectedContact?.groupId) {
-      setIsGroupCallActive(true);
-    }
-  }, [activeGroupCall, selectedContact]);
 
   // Listen for when someone starts a call in current group
   useEffect(() => {
@@ -60,15 +55,20 @@ export const useGroupCall = ({ currentUserId, selectedContact }: UseGroupCallPar
 
     const handleGroupCallStarted = (data: {
         groupId: string;
+        groupName: string;
         starterId: string;
         starterName?: string;
+        roomName: string;
+        callType: "audio" | "video";
     }) => {
         if (data.groupId === selectedContact.groupId && data.starterId !== currentUserId) {
         dispatch(setIncomingGroupCall({
             groupId: data.groupId,
+            groupName: data.groupName,
             starterId: data.starterId,
             starterName: data.starterName || "Someone",
-            roomName: `group-${data.groupId}`,
+            roomName: data.roomName,
+            callType: data.callType,
         }));
         }
     };

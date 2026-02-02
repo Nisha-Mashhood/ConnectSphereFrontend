@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import {
   Button,
   Avatar,
@@ -6,7 +6,6 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Spinner,
 } from "@nextui-org/react";
 import {
   FaPhone,
@@ -22,7 +21,7 @@ import VideoCallOverlay from "./VideoCallOverlay";
 import AudioCallOverlay from "./AudioCallOverlay";
 import { useGroupCall } from "../../../../Hooks/User/Chat/GroupCall/useChatGroupCall";
 
-const GroupCall = lazy(() => import("./Groups/GroupCall"));
+// const GroupCall = lazy(() => import("./Groups/GroupCall"));
 
 interface ChatHeaderProps {
   selectedContact: Contact | null;
@@ -33,6 +32,7 @@ interface ChatHeaderProps {
   currentUserId: string;
   getChatKey: (contact: Contact) => string;
   call: ReturnType<typeof useChatCall>;
+  groupCall: ReturnType<typeof useGroupCall>;
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({
@@ -44,6 +44,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   currentUserId,
   getChatKey,
   call,
+  groupCall
 }) => {
   const {
     isAudioCallActive,
@@ -61,10 +62,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
     toggleScreenShare,
   } = call;
 
-  const { isGroupCallActive, startGroupCall, endGroupCall } = useGroupCall({
-    currentUserId,
-    selectedContact,
-  });
+  const { isGroupCallActive, startGroupCall, endGroupCall } = groupCall;
 
   const getGradient = () => {
     if (!selectedContact) return "from-violet-500 to-fuchsia-500";
@@ -228,7 +226,21 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
             isIconOnly
             variant="flat"
             className="bg-white/20 text-white hover:bg-white/30 transition-all w-8 h-8 sm:w-10 sm:h-10"
-            onPress={isAudioCallActive ? () => endCall() : startAudioCall}
+            onPress={() => {
+                      if (selectedContact.type === "group") {
+                        if (isGroupCallActive) {
+                          endGroupCall();
+                        } else {
+                          startGroupCall("audio");
+                        }
+                      } else {
+                        if (isAudioCallActive) {
+                          endCall();
+                        } else {
+                          startAudioCall();
+                        }
+                      }
+                    }}
             aria-label={
               selectedContact.type === "group"
                 ? isAudioCallActive
@@ -253,7 +265,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
                 if (isGroupCallActive) {
                   endGroupCall();
                 } else {
-                  startGroupCall();
+                  startGroupCall("video");
                 }
               } else {
                 if (isVideoCallActive) {
@@ -278,7 +290,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           </Button>
 
           {/* GROUP CALL COMPONENT */}
-          {selectedContact.type === "group" && (
+          {/* {selectedContact.type === "group" && (
             <Suspense fallback={<Spinner size="sm" color="primary" />}>
               <GroupCall
                 groupId={selectedContact.groupId || ""}
@@ -287,7 +299,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
                 onEnd={endGroupCall}
               />
             </Suspense>
-          )}
+          )} */}
 
           {/* MORE OPTIONS */}
           <Dropdown>

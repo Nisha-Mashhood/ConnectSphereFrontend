@@ -11,27 +11,30 @@ interface IncomingCall {
 }
 export interface IncomingGroupCall {
   groupId: string;
+  groupName: string;
   starterId: string;
   starterName: string;
   roomName: string;
+  callType: 'audio' | 'video';
 }
 
+export interface ActiveGroupCall {
+  groupId: string;
+  groupName: string;
+  roomName: string;
+  callType: 'audio' | 'video';
+}
 interface CallState {
   incomingCall: IncomingCall | null;
   incomingGroupCall: IncomingGroupCall | null;
-  activeGroupCall: {
-    groupId: string;
-    roomName: string;
-  } | null;
+  activeGroupCall: ActiveGroupCall | null
 }
+
 
 const initialState: CallState = {
   incomingCall: null,
   incomingGroupCall: null,
-  activeGroupCall: {
-    groupId: null,
-    roomName: null
-  }
+  activeGroupCall: null,
 };
 
 const callSlice = createSlice({
@@ -50,7 +53,7 @@ const callSlice = createSlice({
     clearIncomingGroupCall: (state) => {
       state.incomingGroupCall = null;
     },
-    setActiveGroupCall(state, action: PayloadAction<{ groupId: string; roomName: string }>) {
+    setActiveGroupCall(state, action: PayloadAction<ActiveGroupCall>) {
       state.activeGroupCall = action.payload;
     },
     clearActiveGroupCall(state) {

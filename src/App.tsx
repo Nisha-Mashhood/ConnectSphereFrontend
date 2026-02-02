@@ -3,7 +3,6 @@ import { AdminRoutes, UserRoutes } from "./routes/routes";
 import { Toaster } from "react-hot-toast";
 import { setupInterceptors } from "./lib/axios";
 import { useEffect } from "react";
-import NotificationHandler from "./Components/User/Home/NotificationHandler";
 import { useReviewModalTimer } from "./Service/useReviewModalTimer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
@@ -14,6 +13,8 @@ import GlobalCallListener from "./Components/User/Home/GlobalCallListener";
 import GlobalRingtone from "./Components/User/Home/GlobalRingtone";
 import GlobalGroupCallListener from "./Components/User/Common/Chat/GlobalGroupCallListener";
 import { clearIncomingCall, clearIncomingGroupCall } from "./redux/Slice/callSlice";
+import SocketHandler from "./Components/User/Home/SocketHandler";
+import GlobalGroupCallOverlay from "./Components/User/Common/Chat/Groups/GlobalGroupCallOverlay";
 
 
 function App() {
@@ -40,12 +41,13 @@ function App() {
 
   return (
     <>
-      <NotificationHandler />
+      <SocketHandler />
         <GlobalCallListener />
-        <GlobalGroupCallListener />  
-        <GlobalRingtone /> 
-          <IncomingCallBar />
-            {isAdminRoute ? <AdminRoutes /> : <UserRoutes />}
+        <GlobalGroupCallListener /> 
+          <GlobalGroupCallOverlay /> 
+            <GlobalRingtone /> 
+              <IncomingCallBar />
+                {isAdminRoute ? <AdminRoutes /> : <UserRoutes />}
     
               {currentUser && !isAdminRoute && (
                 <ReviewModal

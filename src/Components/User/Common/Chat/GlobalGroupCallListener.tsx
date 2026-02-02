@@ -10,19 +10,24 @@ const GlobalGroupCallListener: React.FC = () => {
 
   useEffect(() => {
     const handleGroupCallStarted = (data: {
-      groupId: string;
-      starterId: string;
-      callType: string;
-      roomName: string;
-      starterName?: string;
+        groupId: string;
+        groupName: string;
+        starterId: string;
+        starterName?: string;
+        roomName: string;
+        callType: "audio" | "video";
     }) => {
+      console.log("StarterId : ",data.starterId);
+      console.log("currentUser : ",currentUser.id);
       if (data.starterId !== currentUser?.id) {
         console.log("Incoming group call:", data);
         dispatch(setIncomingGroupCall({
-          groupId: data.groupId,
-          starterId: data.starterId,
-          starterName: data.starterName || "Someone",
-          roomName: data.roomName,
+            groupId: data.groupId,
+            groupName: data.groupName,
+            starterId: data.starterId,
+            starterName: data.starterName || "Someone",
+            roomName: data.roomName,
+            callType: data.callType,
         }));
       }
     };

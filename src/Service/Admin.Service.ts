@@ -90,7 +90,6 @@ export const getPendingMentorRequests = async (limit) => {
     const response = await axiosInstance.get("/admin/pending-mentor-requests", {
       params: { limit }
     });
-    // console.log("Pending Mentor requset from backend : ",response.data.data);
     return response.data.data;
   } catch (error) {
     handleError(error);

@@ -1,9 +1,11 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { store } from "../redux/store"; 
+import { store } from "../redux/store";
 import { signOut } from "../redux/Slice/userSlice";
 import toast from "react-hot-toast";
 
+let isRefreshing = false;
+let refreshPromise: Promise<void> | null = null;
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -37,7 +39,7 @@ export const setupInterceptors = (navigate) => {
   axiosInstance.interceptors.request.use(
     (config) => {
       const requestKey = getRequestKey(config);
-      
+
       // If there's already a pending request with the same key, cancel it
       if (pendingRequests.has(requestKey)) {
         const controller = pendingRequests.get(requestKey);
@@ -49,20 +51,9 @@ export const setupInterceptors = (navigate) => {
       pendingRequests.set(requestKey, controller);
       config.signal = controller.signal;
 
-      // Add auth token
-      const token = localStorage.getItem("authToken") || 
-        document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("accessToken="))
-          ?.split("=")[1];
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
       return config;
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   );
 
   axiosInstance.interceptors.response.use(
@@ -73,7 +64,6 @@ export const setupInterceptors = (navigate) => {
       return response;
     },
     async (error) => {
-  
       if (error?.config) {
         try {
           const requestKey = getRequestKey(error.config);
@@ -89,40 +79,60 @@ export const setupInterceptors = (navigate) => {
       }
 
       if (error.response?.status === 429) {
-        toast.error("Too many requests. Please try again later.", { duration: 3000 });
+        toast.error("Too many requests. Please try again later.", {
+          duration: 3000,
+        });
         console.warn(error.response.data?.message);
         return;
       }
 
-      if (error.response?.status === 403 && error.response.data?.message === "Blocked") {
-      toast.error("Your account has been blocked. Please contact support.");
-      store.dispatch(signOut());
-      navigate("/login");
-      console.error("User blocked:", error.response.data);
-      return;
-    }
-
+      if (
+        error.response?.status === 403 &&
+        error.response.data?.message === "Blocked"
+      ) {
+        toast.error("Your account has been blocked. Please contact support.");
+        store.dispatch(signOut());
+        navigate("/login");
+        console.error("User blocked:", error.response.data);
+        return;
+      }
 
       if (error.response?.status === 401 && !error.config?._retry) {
         error.config._retry = true;
-        try {
-          const response = await axiosInstance.post("/auth/refresh-token", {}, { withCredentials: true });
-          const { newAccessToken } = response.data;
-          console.log(`New Acess Token created : ${newAccessToken}`);
-          return axiosInstance(error.config);
-        } catch (refreshError) {
-          console.log(refreshError);
-          store.dispatch(signOut());
-          navigate("/login");
-          return;
-          // return Promise.reject(refreshError);
+        if (!isRefreshing) {
+          isRefreshing = true;
+          refreshPromise = axiosInstance
+          .post("/auth/refresh-token", {}, { withCredentials: true })
+          .then(() => {
+            // nothing to return, cookies are set by backend
+          })
+          .finally(() => {
+            isRefreshing = false;
+          });
         }
+
+  await refreshPromise;
+  return axiosInstance(error.config);
+        // try {
+        //   const response = await axiosInstance.post(
+        //     "/auth/refresh-token",
+        //     {},
+        //     { withCredentials: true },
+        //   );
+        //   const { newAccessToken } = response.data.data;
+        //   console.log(`New Acess Token created : ${newAccessToken}`);
+        //   return axiosInstance(error.config);
+        // } catch (refreshError) {
+        //   console.log(refreshError);
+        //   store.dispatch(signOut());
+        //   navigate("/login");
+        //   return;
+        //   // return Promise.reject(refreshError);
+        // }
       }
 
       console.error(error);
-       return Promise.reject(error);
-    }
+      return Promise.reject(error);
+    },
   );
 };
-
-
