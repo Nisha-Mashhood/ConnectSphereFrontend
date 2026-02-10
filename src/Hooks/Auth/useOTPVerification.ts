@@ -183,8 +183,8 @@ export function useOTPVerification() {
     try {
       setValue("otp", "");
 
-      const { otpId } = await resendOTP({
-        email: otpContext.email,
+      const { newotpId } = await resendOTP({
+        otpId: otpContext.otpId,
         purpose: otpContext.purpose,
       });
 
@@ -192,7 +192,7 @@ export function useOTPVerification() {
         setOtpContext({
           email: otpContext.email,
           purpose: otpContext.purpose,
-          otpId,
+          newotpId,
         })
       );
 

@@ -63,7 +63,7 @@ export const updateUserDetails = async (userId: string, formData: FormData) => {
   }
 };
 
-export const resendOTP = async (data: { email: string; purpose: OtpPurpose; }) => {
+export const resendOTP = async (data: { otpId: string; purpose: OtpPurpose; }) => {
   try {
     const response = await axiosInstance.post( "/auth/resend-otp", data);
     return response.data.data; 

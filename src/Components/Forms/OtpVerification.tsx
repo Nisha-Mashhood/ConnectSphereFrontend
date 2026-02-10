@@ -78,6 +78,11 @@ const getOtpSubText = (purpose?: string) => {
                 <div className="text-small text-default-500">
                   OTP value: <span className="text-md font-medium">{otpValue}</span>
                 </div>
+                <Button
+                  label="Verify"
+                  type="submit"
+                  disabled={isSubmitting || otpValue.length !== 6}
+                />
 
                 {isResendEnabled ? (
                   <Button
@@ -102,11 +107,6 @@ const getOtpSubText = (purpose?: string) => {
                 </div>
               </div>
 
-              <Button
-                label="Verify"
-                type="submit"
-                disabled={isSubmitting || otpValue.length !== 6}
-              />
             </form>
           </div>
         </div>

@@ -73,7 +73,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, req
                     <p className="text-sm text-default-500">
                       Date: {request.selectedSlot.day} at {request.selectedSlot.timeSlots}
                     </p>
-                    <p className="text-sm text-default-500">Fee: ${request.price}</p>
+                    <p className="text-sm text-default-500">Fee: {formatCurrency(request?.price)}</p>
                   </div>
                   <Elements stripe={stripePromise}>
                     <PaymentForm request={request} onClose={onClose} />

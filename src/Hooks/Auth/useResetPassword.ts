@@ -23,7 +23,7 @@ export function useResetPassword() {
     setIsLoading(true);
     try {
       dispatch(signinStart());
-      const data = { email: resetEmail, newPassword: values.newPassword };
+      const data = { newPassword: values.newPassword, confirmPassword: values.confirmPassword };
       await resetPassword(data);
       toast.success("Password reset successfully!");
       dispatch(clearForgotOtpVerified());

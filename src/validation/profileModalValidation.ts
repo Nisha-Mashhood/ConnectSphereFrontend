@@ -10,6 +10,9 @@ import {
   maxLength,
   noMultipleSpaces,
   noExcessiveRepeats,
+  noSequentialRepeatedDigits,
+  noSequentialRepeatedLetters,
+  noStartingSpecialChar,
 } from "./validationRules";
 
 // Professional Info Schema
@@ -44,10 +47,14 @@ export const contactSchema = Yup.object({
 export const passwordSchema = Yup.object({
   currentPassword: required("Current password is required"),
   newPassword: required("New password is required")
-    .concat(passwordPattern())
-    .concat(minLength(8))
-    .concat(noExcessiveRepeats(3))
-    .concat(maxLength(20)),
+        .concat(minLength(8, "New password must be at least 8 characters"))
+        .concat(maxLength(20, "New password cannot exceed 20 characters"))
+        .concat(passwordPattern())
+        .concat(noSequentialRepeatedDigits())
+        .concat(noSequentialRepeatedLetters())
+        .concat(noMultipleSpaces())
+        .concat(noExcessiveRepeats(3))
+        .concat(noStartingSpecialChar()),
   confirmPassword: confirmPasswordRule(),
 });
 

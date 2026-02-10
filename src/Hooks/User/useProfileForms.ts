@@ -210,6 +210,7 @@ export const useProfileForms = (): UseProfileFormsReturn => {
       await updateUserPassword(currentUser.id, {
         currentPassword: passwordInfo.currentPassword,
         newPassword: passwordInfo.newPassword,
+        confirmPassword: passwordInfo.confirmPassword
       });
       toast.success("Password updated successfully");
       setPasswordInfo({
