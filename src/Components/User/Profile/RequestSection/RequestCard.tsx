@@ -1,7 +1,25 @@
-import { Card, CardBody, Avatar, Badge, Button, Tooltip } from "@nextui-org/react";
-import { FaCheckCircle, FaTimesCircle, FaClock, FaMoneyBillWave, FaCreditCard, FaCalendarAlt } from "react-icons/fa";
+import {
+  Card,
+  CardBody,
+  Avatar,
+  Badge,
+  Button,
+  Tooltip,
+} from "@nextui-org/react";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaClock,
+  FaMoneyBillWave,
+  FaCreditCard,
+  FaCalendarAlt,
+} from "react-icons/fa";
 import { StatusBadge } from "./StatusBadge";
-import { formatCurrency, getRelativeTime, getRequestProfile } from "../../../../pages/User/Profile/helper";
+import {
+  formatCurrency,
+  getRelativeTime,
+  getRequestProfile,
+} from "../../../../pages/User/Profile/helper";
 import { RequestData } from "../../../../redux/types";
 
 interface RequestCardProps {
@@ -22,9 +40,12 @@ export const RequestCard: React.FC<RequestCardProps> = ({
   openPaymentModal,
 }) => {
   const { profileId, profilePic, name } = getRequestProfile(request, isSent);
+  const isInactive = request.isAccepted !== "Pending";
 
   return (
-    <Card className="mb-4 shadow-sm hover:shadow-md transition-shadow">
+    <Card
+      className={`mb-4 shadow-sm hover:shadow-md transition-shadow ${isInactive ? "opacity-70" : ""}`}
+    >
       <CardBody className="cursor-pointer transition-transform duration-300 hover:scale-105">
         <div className="flex items-start gap-4">
           <Badge
@@ -36,7 +57,13 @@ export const RequestCard: React.FC<RequestCardProps> = ({
               src={profilePic}
               className="w-16 h-16"
               isBordered={request.isAccepted === "Accepted"}
-              color={request.isAccepted === "Accepted" ? "success" : request.isAccepted === "Rejected" ? "danger" : "warning"}
+              color={
+                request.isAccepted === "Accepted"
+                  ? "success"
+                  : request.isAccepted === "Rejected"
+                    ? "danger"
+                    : "warning"
+              }
               onClick={() => handleProfileClick(profileId)}
               isFocusable
             />
@@ -50,10 +77,16 @@ export const RequestCard: React.FC<RequestCardProps> = ({
                 >
                   {name}
                 </h3>
-                <div className="text-sm text-default-500 flex items-center gap-1 mt-1">
-                  <FaCalendarAlt size={14} />
-                  <span>{request.selectedSlot.day} at {request.selectedSlot.timeSlots}</span>
-                </div>
+                {request.selectedSlot?.day &&
+                  request.selectedSlot?.timeSlots && (
+                    <div className="text-sm text-default-500 flex items-center gap-1 mt-1">
+                      <FaCalendarAlt size={14} />
+                      <span>
+                        {request.selectedSlot.day} at{" "}
+                        {request.selectedSlot.timeSlots}
+                      </span>
+                    </div>
+                  )}
               </div>
               <div className="flex items-center">
                 {request.price && (
@@ -76,39 +109,44 @@ export const RequestCard: React.FC<RequestCardProps> = ({
                 : `${name} requested a mentoring session with you`}
             </p>
             <div className="mt-4 flex justify-between items-center">
-              {!isSent && request.isAccepted === "Pending" && handleAccept && handleReject && (
-                <div className="flex gap-2">
+              {!isSent &&
+                request.isAccepted === "Pending" &&
+                handleAccept &&
+                handleReject && (
+                  <div className="flex gap-2">
+                    <Button
+                      color="success"
+                      variant="flat"
+                      size="sm"
+                      startContent={<FaCheckCircle />}
+                      onClick={() => handleAccept(request.id)}
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      color="danger"
+                      variant="flat"
+                      size="sm"
+                      startContent={<FaTimesCircle />}
+                      onClick={() => handleReject(request.id)}
+                    >
+                      Reject
+                    </Button>
+                  </div>
+                )}
+              {isSent &&
+                request.isAccepted === "Accepted" &&
+                openPaymentModal && (
                   <Button
-                    color="success"
-                    variant="flat"
+                    color="primary"
+                    variant="solid"
                     size="sm"
-                    startContent={<FaCheckCircle />}
-                    onClick={() => handleAccept(request.id)}
+                    startContent={<FaCreditCard />}
+                    onClick={() => openPaymentModal(request)}
                   >
-                    Accept
+                    Pay Now
                   </Button>
-                  <Button
-                    color="danger"
-                    variant="flat"
-                    size="sm"
-                    startContent={<FaTimesCircle />}
-                    onClick={() => handleReject(request.id)}
-                  >
-                    Reject
-                  </Button>
-                </div>
-              )}
-              {isSent && request.isAccepted === "Accepted" && openPaymentModal && (
-                <Button
-                  color="primary"
-                  variant="solid"
-                  size="sm"
-                  startContent={<FaCreditCard />}
-                  onClick={() => openPaymentModal(request)}
-                >
-                  Pay Now
-                </Button>
-              )}
+                )}
             </div>
           </div>
         </div>

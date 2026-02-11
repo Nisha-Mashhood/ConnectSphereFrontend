@@ -49,9 +49,9 @@ export const getReturnUrl = () => {
 };
 
 export const getRequestProfile = (request: RequestData, isSent: boolean) => {
-  const otherPerson = isSent ? request.mentor?.user : request.user;
+  const otherPerson = isSent ? request.mentor?.user : request?.user;
   return {
-    profileId: isSent ? request.mentorId : otherPerson.id,
+    profileId: isSent ? request?.mentorId : otherPerson?.id,
     profilePic: otherPerson.profilePic || "/default-avatar.png",
     name: otherPerson.name || "Unknown User",
   };
