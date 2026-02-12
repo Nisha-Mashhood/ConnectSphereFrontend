@@ -142,9 +142,9 @@ export const adminPasscodeCheck = async (passkey: string) => {
 
 
 // User Profile
-export const checkProfile = async (userId: string) => {
+export const checkProfile = async () => {
   try {
-    const response = await axiosInstance.get(CHECK_PROFILE(userId));
+    const response = await axiosInstance.get(CHECK_PROFILE);
     return response.data.data;
   } catch (error) {
     handleError(error);

@@ -84,7 +84,7 @@ const ProfileInfoCard: FC<ProfileInfoCardProps> = ({
 
   const handleBecomeMentor = async () => {
     try {
-      const profileResponse = await checkProfile(currentUser.id);
+      const profileResponse = await checkProfile();
       if (!profileResponse.isProfileComplete) {
         toast.error("Please complete your profile first");
         navigate("/complete-profile");

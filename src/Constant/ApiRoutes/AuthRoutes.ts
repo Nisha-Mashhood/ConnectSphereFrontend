@@ -19,6 +19,6 @@ export const RESET_PASSWORD = `${AUTH_BASE}/reset-password`;
 export const VERIFY_ADMIN_PASSKEY = `${AUTH_BASE}/verify-admin-passkey`;
 
 // Profile
-export const CHECK_PROFILE = (userId: string) => `${AUTH_BASE}/check-profile/${userId}`;
+export const CHECK_PROFILE = `${AUTH_BASE}/check-profile`;
 export const PROFILE_DETAILS = (userId: string) => `${AUTH_BASE}/profiledetails/${userId}`;
 export const UPDATE_USER_DETAILS = (userId: string) => `${AUTH_BASE}/updateUserDetails/${userId}`;

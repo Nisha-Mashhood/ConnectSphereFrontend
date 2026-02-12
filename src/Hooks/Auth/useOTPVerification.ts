@@ -70,7 +70,7 @@ export function useOTPVerification() {
 
     try {
       dispatch(signinStart());
-
+      console.log("Otp Context :", otpContext);
       const payload = {
         email: otpContext.email,
         otpId: otpContext.otpId,
@@ -135,7 +135,7 @@ export function useOTPVerification() {
         dispatch(fetchGroupDetailsForMembers(user.id));
         dispatch(fetchUserConnections(user.id));
 
-        const profileResponse = await checkProfile(user.id);
+        const profileResponse = await checkProfile();
 
         toast.success("Login successful!");
 

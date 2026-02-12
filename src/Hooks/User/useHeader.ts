@@ -181,7 +181,7 @@ export const useHeader = () => {
       return;
     }
     try {
-      const profileResponse = await checkProfile(currentUser.id);
+      const profileResponse = await checkProfile();
       const isProfileComplete = profileResponse.isProfileComplete;
 
       if (!isProfileComplete) {

@@ -32,6 +32,8 @@ export function useLogin() {
       }
 
       const { user, otpId } = result;
+      console.log("user : ",user);
+      console.log("otpId : ",otpId);
 
       if (user.role === "admin") {
         toast.error("Invalid credentials for user login");

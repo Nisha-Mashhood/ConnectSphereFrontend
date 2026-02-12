@@ -5,7 +5,7 @@ import { handleError } from "./ErrorHandler";
 export const SendRequsetToMentor = async (data) => {
   try {
     const response = await axiosInstance.post(
-      "/collaboration/create-mentorprofile",
+      "/collaboration/send-mentor-request",
       data
     );
     return response.data.data;

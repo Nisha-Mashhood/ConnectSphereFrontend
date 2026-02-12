@@ -227,10 +227,7 @@ export const useProfileForms = (): UseProfileFormsReturn => {
 
   const handleMentorshipSubmit = async (onClose: () => void) => {
     try {
-      const { MentorData } = await updateMentorProfile(
-        mentorDetails.id,
-        mentorshipInfo
-      );
+      const { MentorData } = await updateMentorProfile( mentorshipInfo );
       dispatch(updateMentorInfo(MentorData));
       toast.success("Mentorship info updated");
       onClose();

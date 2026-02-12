@@ -63,7 +63,7 @@ export const getActiveCollaborationsCount = async () => {
 };
 
 // Trends / Analytics
-export const getRevenueTrends = async (timeFormat: string, days: number) => {
+export const getRevenueTrends = async (timeFormat: string, days: string) => {
   try {
     const response = await axiosInstance.get(REVENUE_TRENDS, {
       params: { timeFormat, days },
@@ -74,7 +74,7 @@ export const getRevenueTrends = async (timeFormat: string, days: number) => {
   }
 };
 
-export const getUserGrowth = async (timeFormat: string, days: number) => {
+export const getUserGrowth = async (timeFormat: string, days: string) => {
   try {
     const response = await axiosInstance.get(USER_GROWTH, {
       params: { timeFormat, days },

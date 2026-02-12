@@ -37,7 +37,6 @@ export const blockUserService = async (userId) => {
   try {
     const response = await axiosInstance.put(`/auth/blockuser/${userId}`);
     return response.data.data;
-    toast.success("User blocked successfully");
   } catch (error) {
     handleError(error)
   }
@@ -48,7 +47,6 @@ export const unblockUserService = async (userId) => {
   try {
     const response = await axiosInstance.put(`/auth/unblockuser/${userId}`);
     return response.data.data;
-    toast.success("User unblocked successfully");
   } catch (error) {
     handleError(error)
   }
