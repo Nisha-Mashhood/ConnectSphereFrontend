@@ -1,3 +1,4 @@
+import { GET_CONTACT_MESSAGES, SEND_CONTACT_MESSAGE, SEND_REPLY_TO_CONTACT } from "../Constant/ApiRoutes/ContactUsRoutes";
 import { axiosInstance } from "../lib/axios";
 import { handleError } from "./ErrorHandler";
 
@@ -14,7 +15,7 @@ interface ReplyData {
 
 export const sendContactMessage = async (data: ContactMessage) => {
   try {
-    const response = await axiosInstance.post(`/contactUs/contact`, data);
+    const response = await axiosInstance.post(SEND_CONTACT_MESSAGE, data);
     return response.data.data;
   } catch (error) {
    handleError(error);
@@ -33,7 +34,7 @@ export const getContactMessages = async ({
   dateFilter?: "today" | "7days" | "30days" | "all";
 }) => {
   try {
-    const response = await axiosInstance.get("/contactUs/messages", {
+    const response = await axiosInstance.get(GET_CONTACT_MESSAGES, {
       params: { page, limit, search, dateFilter },
     });
 
@@ -45,7 +46,7 @@ export const getContactMessages = async ({
 
 export const sendReply = async (contactMessageId: string, data: ReplyData) => {
   try {
-    const response = await axiosInstance.post(`/contactUs/reply/${contactMessageId}`, data);
+    const response = await axiosInstance.post(SEND_REPLY_TO_CONTACT(contactMessageId), data);
     return response.data.data;
   } catch (error) {
     handleError(error);

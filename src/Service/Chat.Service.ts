@@ -2,6 +2,12 @@ import { IChatMessage, ILastMessageSummary } from "../Interface/User/IchatMessag
 import { axiosInstance } from "../lib/axios";
 import  { AxiosProgressEvent } from "axios";
 import { handleError } from "./ErrorHandler";
+import {
+   GET_CHAT_MESSAGES,
+  UPLOAD_CHAT_MEDIA,
+  GET_UNREAD_MESSAGES,
+  GET_LAST_MESSAGES
+ } from "../Constant/ApiRoutes/ChatRoutes";
 
 
 export const fetchChatMessages = async (
@@ -12,7 +18,7 @@ export const fetchChatMessages = async (
   signal?: AbortSignal
 ): Promise<{ messages: IChatMessage[]; total: number }> => {
   try {
-    const response = await axiosInstance.get("/chat/messages", {
+    const response = await axiosInstance.get(GET_CHAT_MESSAGES, {
       params: { contactId, groupId, page, limit },
       signal,
     });
@@ -42,7 +48,7 @@ export const uploadMedia = async (
   if (groupId) formData.append("groupId", groupId);
 
   try {
-    const response = await axiosInstance.post("/chat/upload", formData, {
+    const response = await axiosInstance.post(UPLOAD_CHAT_MEDIA, formData, {
       onUploadProgress, 
     });
     return response.data.data;
@@ -54,7 +60,7 @@ export const uploadMedia = async (
 
 export const getUnreadMessages = async (userId: string) => {
   try {
-    const response = await axiosInstance.get("/chat/unread", {
+    const response = await axiosInstance.get(GET_UNREAD_MESSAGES, {
       params: { userId },
     });
     return response.data.data; 
@@ -76,7 +82,7 @@ export const getUnreadMessages = async (userId: string) => {
 
 export const getLastMessagesForContacts = async ( userId: string ): Promise<Record<string, ILastMessageSummary>> => {
   try {
-    const response = await axiosInstance.get("/chat/last-messages", {
+    const response = await axiosInstance.get(GET_LAST_MESSAGES, {
       params: { userId },
     });
     return response.data.data;

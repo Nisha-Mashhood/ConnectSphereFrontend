@@ -50,6 +50,7 @@ const AdminInfoCard = ({ admin, onSave, saving }) => {
       await updateUserPassword(admin.id, {
         oldPassword: passwordData.oldPassword,
         newPassword: passwordData.newPassword,
+        confirmPassword: passwordData.confirmPassword,
       });
       toast.success("Password updated successfully");
       setPasswordData({

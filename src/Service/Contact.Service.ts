@@ -1,12 +1,13 @@
 import axios from "axios";
 import { axiosInstance } from "../lib/axios";
 import { handleError } from "./ErrorHandler";
+import { GET_USER_CONTACTS } from "../Constant/ApiRoutes/ContactRoutes";
 
 export const getUserContacts = async () => {
   try {
     const token = localStorage.getItem("authToken");
     // console.log("Fetching contacts from /contacts/user with token:", token);
-    const response = await axiosInstance.get(`/contacts/user`, {
+    const response = await axiosInstance.get(GET_USER_CONTACTS, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.data) {

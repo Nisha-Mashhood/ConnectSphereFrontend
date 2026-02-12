@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Spinner, Button } from "@nextui-org/react";
 import { FaArrowLeft } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AdminProfileCard from "./AdminProfile/AdminProfileCard";
 import AdminInfoCard from "./AdminProfile/AdminInfoCard";
@@ -14,7 +14,7 @@ import { User } from "../../redux/types";
 const AdminProfile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { adminId } = useParams();
+  // const { adminId } = useParams();
   const [admin, setAdmin] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -23,7 +23,7 @@ const AdminProfile = () => {
   // Fetch details
   const fetchAdminDetails = useCallback(async () => {
     try {
-      const response = await getAdminById(adminId!);
+      const response = await getAdminById();
       setAdmin(response.userDetails);
     } catch (error) {
       console.log(error);
@@ -31,7 +31,7 @@ const AdminProfile = () => {
     } finally {
       setLoading(false);
     }
-  }, [adminId]);
+  }, []);
 
   useEffect(() => {
     fetchAdminDetails();
@@ -52,7 +52,7 @@ const AdminProfile = () => {
         formData.append("profilePic", selectedImage);
       }
 
-      const updated = await updateAdminProfile(adminId!, formData);
+      const updated = await updateAdminProfile(formData);
       dispatch(updateAdminProfileAction(updated.user));
       setAdmin(updated.user);
       toast.success("Profile updated successfully!");

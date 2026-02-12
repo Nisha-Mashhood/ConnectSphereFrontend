@@ -16,6 +16,11 @@ export interface LoginFormValues {
   email: string;
   password: string;
 }
+export interface LoginFormApiValues {
+  email: string;
+  password: string;
+  role: string;
+}
 
 export const loginSchema = Yup.object({
   email: required("Email is required")

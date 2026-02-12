@@ -122,7 +122,7 @@ export const getAllMentorProfile = async (userId) => {
 //update Mentor Profile
 export const updateMentorProfile = async(mentorId, mentorInfo) =>{
   try {
-    const response = await axiosInstance.put(`/mentors/update-mentor/${mentorId}`,mentorInfo);
+    const response = await axiosInstance.put(`/mentors/update-mentor`,mentorInfo);
     return response.data.data;
   } catch (error) {
     handleError(error)

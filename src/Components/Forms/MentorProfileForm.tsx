@@ -168,7 +168,7 @@ const MentorProfileForm = () => {
 
     const formData = new FormData();
     data.certificates.forEach((file) => formData.append("certificates", file));
-    formData.append("userId", currentUser.id);
+    // formData.append("userId", currentUser.id);
     formData.append("specialization", data.specialization);
     formData.append("bio", data.bio);
     formData.append("price", String(data.price));
