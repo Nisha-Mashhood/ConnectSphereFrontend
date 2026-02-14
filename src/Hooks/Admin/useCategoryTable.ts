@@ -26,7 +26,7 @@ export function useCategoryTable<T extends { id: string }>({
     | ((params: FetchParams) => Promise<FetchResponse<T>>);
 
   deleteFn: (id: string) => Promise<void | unknown>;
-  updateFn: (id: string, data: FormData) => Promise<void | unknown>;
+  updateFn: (id: string, data: FormData) => Promise<T>;
   createSuccess?: (item: T) => void;
   updateSuccess?: (item: T) => void;
   parentId?: string;
@@ -82,9 +82,9 @@ export function useCategoryTable<T extends { id: string }>({
 
   const handleUpdate = async (id: string, formData: FormData) => {
     try {
-      await updateFn(id, formData);
+      const updatedItem = await updateFn(id, formData);
       toast.success("Updated successfully");
-      fetchData();
+      handleUpdateLocal(updatedItem);
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");
     }

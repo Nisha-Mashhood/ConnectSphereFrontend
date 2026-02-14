@@ -24,7 +24,7 @@ interface FormModalProps {
   subcategoryId?: string | null;
   isEdit?: boolean;
   item?: ICategory | ISubCategory | ISkill;
-  update?: (id: string, formData: FormData) => Promise<void>;
+  update?: ( id: string, formData: FormData ) => Promise<void>;
   onSuccess?: (item: ICategory | ISubCategory | ISkill) => void;
 }
 
@@ -123,7 +123,8 @@ const FormModal: React.FC<FormModalProps> = ({
 
       if (isEdit) {
         await update(item.id, formData);
-        result = { ...item, ...data, imageUrl: preview || item.imageUrl };
+        handleClose();
+        return;
       } else {
         if (type === "Category") {
           result = await createCategory(formData);
