@@ -162,10 +162,10 @@ export const useExploreMentors = (): UseExploreMentorsReturn => {
   const [conflictingRequests, setConflictingRequests] = useState<RequestData[]>([]);
   const [pendingMentorRequestData, setPendingMentorRequestData] = useState<{
     mentorId: string;
-    userId: string;
+    // userId: string;
     selectedSlot: { day: string; timeSlots: string };
-    price: number;
-    timePeriod: number;
+    // price: number;
+    // timePeriod: number;
   } | null>(null);
 
   const filterTypes: FilterType[] = [
@@ -488,13 +488,13 @@ export const useExploreMentors = (): UseExploreMentorsReturn => {
 
   const requestData = {
     mentorId: selectedMentor.id,
-    userId: currentUser.id,
+    // userId: currentUser.id,
     selectedSlot: {
       day: day.trim(),
       timeSlots: timeSlot.trim(),
     },
-    price: selectedMentor.price,
-    timePeriod: selectedMentor.timePeriod,
+    // price: selectedMentor.price,
+    // timePeriod: selectedMentor.timePeriod,
   };
 
   //Check for existing SENT requests with same slot
@@ -510,11 +510,6 @@ export const useExploreMentors = (): UseExploreMentorsReturn => {
     setSlotConflictModalOpen(true);
     return;
   }
-
-  //only user can send 5 requet in 1 day
-  // const requsetByUser = await getTheRequestByUser(currentUser.id);
-  // console.log("Request send by the user :",requsetByUser);
-
 
   //No conflicts → directly send request
   try {

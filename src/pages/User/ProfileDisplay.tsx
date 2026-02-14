@@ -54,9 +54,9 @@ const ProfileDisplay = () => {
     const [day, timeSlot] = selectedSlot.split(" - ");
     const payload = {
       mentorId: mentor.id,
-      userId: currentUser.id,
+      // userId: currentUser.id,
       selectedSlot: { day: day.trim(), timeSlots: timeSlot.trim() },
-      price: mentor.price,
+      // price: mentor.price,
     };
     try {
       await SendRequsetToMentor(payload);
