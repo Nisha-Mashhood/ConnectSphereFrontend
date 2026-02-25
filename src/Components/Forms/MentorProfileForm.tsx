@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { getAllSkills } from "../../Service/Category.Service";
 import { createMentorProfile } from "../../Service/Mentor.Service";
 import { Skill } from "../../redux/types";
@@ -34,7 +34,7 @@ import { fetchMentorDetails } from "../../redux/Slice/profileSlice";
 
 const MentorProfileForm = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(false);
