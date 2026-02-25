@@ -5,6 +5,7 @@ import { signinStart, signinFailure, setOtpContext } from '../../../redux/Slice/
 import { googleLogin } from '../../../Service/Auth.service';
 import toast from 'react-hot-toast';
 import { AppDispatch } from '../../../redux/store';
+import googleLogo from '../../../assets/googleLogo.png'
 
 const GoogleLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,7 +51,7 @@ const GoogleLogin = () => {
         <div className="flex items-center justify-center">
           <img
             className="w-9 h-5"
-            src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol.png"
+            src={googleLogo}
             alt="Google Icon"
           />
           <span className="ml-4">Log in with Google</span>
