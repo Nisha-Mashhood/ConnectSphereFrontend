@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import toast from "react-hot-toast";
 import { fetchUserDetails, updateUserDetails } from "../../Service/Auth.service";
 import { AxiosError } from "axios";
 import { CompleteProfileFormValues } from "../../validation/completeProfileValidation";
 import { SubmitHandler } from "react-hook-form";
+import { updateUserProfile } from "../../redux/Slice/userSlice";
 
 interface BackendError {
   status: string;
@@ -18,12 +19,13 @@ interface BackendError {
 export function useCompleteProfile() {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [profilePicPreview, setProfilePicPreview] = useState<string | null>(null);
   const [coverPicPreview, setCoverPicPreview] = useState<string | null>(null);
 
-  const getUserDetails = async () => {
+  const getUserDetails = useCallback(async () => {
     if (!currentUser) {
       toast.error("No user logged in");
       navigate("/login");
@@ -32,7 +34,6 @@ export function useCompleteProfile() {
 
     try {
       const data = await fetchUserDetails(currentUser.id);
-      console.log(data);
       const user = data.userDetails;
 
       setProfilePicPreview(user.profilePic || null);
@@ -49,8 +50,8 @@ export function useCompleteProfile() {
         reasonForJoining: user.reasonForJoining || "",
         profilePic: null,
         coverPic: null,
-        profilePicPreview: user.profilePic || null,
-        coverPicPreview: user.coverPic || null,
+        profilePicPreview: null,
+        coverPicPreview: null,
       };
     } catch (error) {
     console.error("Error details:", error);
@@ -61,7 +62,7 @@ export function useCompleteProfile() {
     setIsDataLoaded(true);
     return null;
   }
-  };
+  },[currentUser, navigate]);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -105,7 +106,8 @@ export function useCompleteProfile() {
     });
 
     try {
-      await updateUserDetails(currentUser.id, submitData);
+      const updatedUser = await updateUserDetails(currentUser.id, submitData);
+      dispatch(updateUserProfile(updatedUser.user));
       toast.success("Profile updated successfully!");
       navigate("/");
     } catch (error) {

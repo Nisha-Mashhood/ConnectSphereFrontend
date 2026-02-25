@@ -8,6 +8,7 @@ const initialState = {
   isAdmin: false,
   isForgotOtpVerified: false,
   resetEmail: null,
+  resetToken: null,
   otpContext: null,
   currentAdmin: null,
   isLoggingOutAdmin: false,
@@ -24,6 +25,12 @@ const userSlice = createSlice({
     },
     clearResetEmail: (state) => {
       state.resetEmail = null;
+    },
+    setResetToken: (state, action) => {
+      state.resetToken = action.payload;
+    },
+    clearResetToken: (state) => {
+      state.resetToken = null;
     },
     setOtpContext: (state, action) => {
       state.otpContext = {
@@ -107,6 +114,8 @@ const userSlice = createSlice({
 export const {
   setResetEmail,
   clearResetEmail,
+  setResetToken,
+  clearResetToken,
   setForgotOtpVerified,
   clearForgotOtpVerified,
   setOtpContext,

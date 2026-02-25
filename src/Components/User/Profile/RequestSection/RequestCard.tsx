@@ -21,6 +21,7 @@ import {
   getRequestProfile,
 } from "../../../../pages/User/Profile/helper";
 import { RequestData } from "../../../../redux/types";
+import toast from "react-hot-toast";
 
 interface RequestCardProps {
   request: RequestData;
@@ -64,7 +65,13 @@ export const RequestCard: React.FC<RequestCardProps> = ({
                     ? "danger"
                     : "warning"
               }
-              onClick={() => handleProfileClick(profileId)}
+              onClick={() => {
+                if (profileId !== "unknown-profile") {
+                  handleProfileClick(profileId);
+                } else {
+                  toast.error("Profile information unavailable");
+                }
+              }}
               isFocusable
             />
           </Badge>
@@ -73,7 +80,13 @@ export const RequestCard: React.FC<RequestCardProps> = ({
               <div>
                 <h3
                   className="text-lg font-medium cursor-pointer hover:text-primary transition colors"
-                  onClick={() => handleProfileClick(profileId)}
+                  onClick={() => {
+                    if (profileId !== "unknown-profile") {
+                      handleProfileClick(profileId);
+                    } else {
+                      toast.error("Profile information unavailable");
+                    }
+                  }}
                 >
                   {name}
                 </h3>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { getAllSkills } from "../../Service/Category.Service";
 import { createMentorProfile } from "../../Service/Mentor.Service";
@@ -30,9 +30,11 @@ import {
 } from "../../validation/becomeMentorValidation";
 import ExperienceModal from "../ReusableComponents/ExperienceModal";
 import { formatDate } from "../../pages/User/Profile/helper";
+import { fetchMentorDetails } from "../../redux/Slice/profileSlice";
 
 const MentorProfileForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -155,6 +157,7 @@ const MentorProfileForm = () => {
     setExperiences(updated);
     setValue("experiences", updated, { shouldValidate: true });
     trigger("experiences");
+    setIsExperienceModalOpen(false);
   };
 
   const onSubmit: SubmitHandler<BecomeMentorFormValues> = async (data) => {
@@ -180,6 +183,7 @@ const MentorProfileForm = () => {
     try {
       setIsLoading(true);
       await createMentorProfile(formData);
+      await dispatch(fetchMentorDetails(currentUser.id));
       toast.success("Profile created successfully!");
       navigate("/");
     } catch (error) {

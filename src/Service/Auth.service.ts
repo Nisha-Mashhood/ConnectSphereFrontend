@@ -123,9 +123,13 @@ export const forgotPassword = async (email: string) => {
   }
 };
 
-export const resetPassword = async (data: { newPassword:string, confirmPassword: string }) => {
+export const resetPassword = async (data: { newPassword:string, confirmPassword: string }, token: string) => {
   try {
-    await axiosInstance.post(RESET_PASSWORD, data);
+    await axiosInstance.post(RESET_PASSWORD, data,{
+      headers: {
+         Authorization: `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     handleError(error);
   }

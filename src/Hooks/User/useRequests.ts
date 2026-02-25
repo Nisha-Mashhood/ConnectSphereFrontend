@@ -30,11 +30,13 @@ export const useRequests = () => {
       // Fetch sent requests
       const sentData = await getTheRequestByUser(currentUser.id);
       setSentRequests(sentData.requests || []);
+      console.log("Sent Request: ", sentData.requests);
 
       // Fetch received requests for mentors
       if (currentUser.role === "mentor" && mentorDetails) {
         const receivedData = await getAllRequest(mentorDetails.id);
         setReceivedRequests(receivedData.requests || []);
+        console.log("Received Request: ", receivedData.requests);
       } else {
         setReceivedRequests([]);
       }

@@ -14,6 +14,7 @@ import {
   unsetIsAdmin,
   setForgotOtpVerified,
   setIsAdmin,
+  setResetToken,
 } from "../../redux/Slice/userSlice";
 import { AppDispatch, RootState } from "../../redux/store";
 
@@ -79,6 +80,7 @@ export function useOTPVerification() {
       };
 
       const response = await verifyOTP(payload);
+      console.log("OTP verify : ",response);
 
       if (response.status !== "success") {
         throw new Error("OTP verification failed");
@@ -153,6 +155,7 @@ export function useOTPVerification() {
 
       /* ---------------- FORGOT PASSWORD ---------------- */
       if (otpContext.purpose === "forgot_password") {
+        dispatch(setResetToken(response.data.resetToken));
         dispatch(setForgotOtpVerified(true));
         toast.success("OTP verified successfully");
         navigate("/reset", { replace: true });
