@@ -205,7 +205,7 @@ export const formatCallDuration = (callLog: ICallLog): string => {
       .padStart(2, "0")}`;
   }
 
-  return "0:00";
+  return "Started At";
 };
 
 /* ------------------------------------------------------
@@ -225,7 +225,7 @@ export const getCallParticipantName = (
       : callLog.senderId._id === currentUserId;
 
   if (callLog.type === "group") {
-    return `Group Call (${callLog.recipientIds.length + 1} participants)`;
+    return callLog.callerName || `Group Call (${callLog.recipientIds.length + 1} participants)`;
   }
 
   if (isSender) {

@@ -211,14 +211,6 @@ const Chat: React.FC = () => {
                 </div>
               </div>
             )}
-
-            {/* {activeGroupCall?.groupId && activeGroupCall?.roomName && currentUser && (
-              <AgoraGroupCallOverlay
-                channelName={activeGroupCall.roomName}
-                userId={currentUser.id}
-                onClose={groupCall.endGroupCall}
-              />
-            )} */}
     </div>
   );
 };

@@ -46,6 +46,7 @@ const ExperienceModal: FC<ExperienceModalProps> = ({
   const isCurrent = watch("isCurrent");
 
   useEffect(() => {
+    if (!isOpen) return;
     if (initialData) {
       reset({
         role: initialData.role || "",
@@ -65,7 +66,16 @@ const ExperienceModal: FC<ExperienceModalProps> = ({
         description: "",
       });
     }
-  }, [initialData, reset]);
+  }, [isOpen, initialData, reset]);
+
+  useEffect(() => {
+  if (isCurrent) {
+    reset((values) => ({
+      ...values,
+      endDate: "",
+    }));
+  }
+}, [isCurrent, reset]);
 
   const onSubmitForm = (data: MentorExperienceInput) => {
     if (!data.startDate) {
@@ -102,7 +112,6 @@ const ExperienceModal: FC<ExperienceModalProps> = ({
       });
       return;
     }
-    onSave(data);
     onSave(data);
   };
 

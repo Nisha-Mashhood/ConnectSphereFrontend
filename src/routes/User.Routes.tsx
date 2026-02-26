@@ -22,8 +22,7 @@ import Chat from "../pages/User/Chat";
 import MentorDashBoard from "../Components/User/Profile/MentorDashboard/MentorDashBoard";
 import ExploreMentors from "../pages/User/Explore/Explore";
 import Profile from "../pages/User/Profile/Profile";
-
-
+import { PublicRoute } from "./Public.Route";
 
 const UserRoutes = () => (
   <>
@@ -31,30 +30,68 @@ const UserRoutes = () => (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/forgot" element={<ForgotPassword />} />
-      <Route path="/otp" element={<OTPVerification />} />
-      <Route path="/reset" element={<ResetPassword />} />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <Signup />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/forgot"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/otp"
+        element={
+          <PublicRoute>
+            <OTPVerification />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/reset"
+        element={
+          <PublicRoute>
+            <ResetPassword />
+          </PublicRoute>
+        }
+      />
       <Route path="/github/callback" element={<GithubCallback />} />
 
       <Route element={<PrivateRoute />}>
         <Route path="/complete-profile" element={<CompleteProfile />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/mentorProfile" element={<MentorProfileForm />} />
-        <Route path="/profileDisplay/:Id" element={< ProfileDisplay />} />
+        <Route path="/profileDisplay/:Id" element={<ProfileDisplay />} />
         <Route path="/explorementor" element={<ExploreMentors />} />
         <Route path="/create-group" element={<CreateGroupForm />} />
         <Route path="/groupDashboard/:groupId" element={<GroupDashboard />} />
         <Route path="/group/:groupId" element={<GroupDetail />} />
-        <Route path="/collaboration/:collabId" element={<CollaborationDetails />} />
+        <Route
+          path="/collaboration/:collabId"
+          element={<CollaborationDetails />}
+        />
         <Route path="/chat" element={<Chat />} />
         <Route path="/chat/:type/:id" element={<Chat />} />
         <Route path="/mentor-dashboard" element={<MentorDashBoard />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
-      <Route path='/forbidden' element={<ForbiddenPage/>} />
+      <Route path="/forbidden" element={<ForbiddenPage />} />
     </Routes>
   </>
 );

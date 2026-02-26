@@ -46,6 +46,7 @@ export const useChatCall = ({
     try {
       const logs = await getCallLogs();
       setCallLogs(logs);
+      console.log("Logs :", logs);
     } catch (err) {
       console.error("Error loading call logs:", err);
     }
