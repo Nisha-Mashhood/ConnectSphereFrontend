@@ -7,6 +7,10 @@ import {
   namePattern,
   noStartingSpecialChar,
   noExcessiveRepeats,
+  noUppercaseEmail,
+  emailFormat,
+  noSequentialRepeatedDigits,
+  noSequentialRepeatedLetters,
 } from "./validationRules";
 
 export interface AdminProfileFormValues {
@@ -26,13 +30,21 @@ export const adminProfileSchema = Yup.object({
     .concat(noStartingSpecialChar())
     .concat(noExcessiveRepeats(3)),
 
-  email: required("Email is required"),
+  email: required("Email is required")
+      .concat(emailFormat())
+      .concat(noUppercaseEmail())
+      .concat(maxLength(100, "Email cannot exceed 100 characters"))
+      .concat(noMultipleSpaces())
+      .concat(noExcessiveRepeats(3))
+      .trim(),
 
   jobTitle: Yup.string()
     .required("jobTitle is required")
     .max(50, "Job title cannot exceed 50 characters")
     .concat(noMultipleSpaces())
     .concat(noStartingSpecialChar())
+    .concat(noSequentialRepeatedDigits())
+    .concat(noSequentialRepeatedLetters())
     .concat(noExcessiveRepeats(3)),
 
   industry: Yup.string()
@@ -40,11 +52,16 @@ export const adminProfileSchema = Yup.object({
     .max(50, "Industry cannot exceed 50 characters")
     .concat(noMultipleSpaces())
     .concat(noStartingSpecialChar())
+    .concat(noSequentialRepeatedDigits())
+    .concat(noSequentialRepeatedLetters())
     .concat(noExcessiveRepeats(3)),
 
   reasonForJoining: Yup.string()
     .optional()
     .max(100, "Maximum 100 characters allowed")
     .concat(noMultipleSpaces())
+    .concat(noStartingSpecialChar())
+    .concat(noSequentialRepeatedDigits())
+    .concat(noSequentialRepeatedLetters())
     .concat(noExcessiveRepeats(3)),
 })

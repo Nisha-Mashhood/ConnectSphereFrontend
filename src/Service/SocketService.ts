@@ -90,6 +90,12 @@ export class SocketService {
   //Initialize connection to Socket.IO server for the given user.
 
   connect(userId: string, token: string) {
+    //Prevent duplicate connections
+    if (this.socket && this.socket.connected) {
+      console.log("Socket already connected. Skipping new connection.");
+      return this.socket;
+    }
+
     this.userId = userId;
 
     this.socket = io(import.meta.env.VITE_SOCKET_URL, {
@@ -203,29 +209,38 @@ export class SocketService {
   }
 
   //Online and offline listners
+  // Tell backend: "User has entered chat screen"
   public emitChatOnline(userId: string): void {
     console.log("Emitting chat:online", userId);
+    //This means user is ACTIVE in chat UI
     this.socket?.emit("chat:online", { userId });
   }
 
+  // Tell backend: "User left chat screen"
   public emitChatOffline(userId: string): void {
     console.log("Emitting chat:offline", userId);
+    //Used when navigating away from chat
     this.socket?.emit("chat:offline", { userId });
   }
 
+  // Listen for LIVE presence updates
   public onUserOnline(callback: (data: { userId: string }) => void): void {
     this.socket?.on("userOnline", (data) => {
+      //Someone JUST became online
       console.log("Received userOnline:", data.userId);
       callback(data);
     });
   }
 
+  
   public offUserOnline(callback: (data: { userId: string }) => void): void {
     this.socket?.off("userOnline", callback);
   }
 
+  //Listen for LIVE offline updates
   public onUserOffline(callback: (data: { userId: string }) => void): void {
     this.socket?.on("userOffline", (data) => {
+      //someone just went offline
       console.log("Received userOffline:", data.userId);
       callback(data);
     });
@@ -233,6 +248,19 @@ export class SocketService {
 
   public offUserOffline(callback: (data: { userId: string }) => void): void {
     this.socket?.off("userOffline", callback);
+  }
+
+  //SNAPSHOT listener
+  public onOnlineUsers(callback: (users: string[]) => void) {
+    this.socket?.on("chat:onlineUsers", (users) => {
+      //Full online state sync
+      console.log("Received existing online users:", users);
+      callback(users);
+    });
+  }
+
+  public offOnlineUsers(callback: (users: string[]) => void) {
+    this.socket?.off("chat:onlineUsers", callback);
   }
 
 

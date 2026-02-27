@@ -24,6 +24,7 @@ const AdminProfile = () => {
   const fetchAdminDetails = useCallback(async () => {
     try {
       const response = await getAdminById();
+      console.log("admin Details : ",response)
       setAdmin(response.userDetails);
     } catch (error) {
       console.log(error);

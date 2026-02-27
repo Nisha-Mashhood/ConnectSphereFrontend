@@ -230,6 +230,14 @@ export const useChatMessages = (
   const onUserOffline = ({ userId }: { userId: string }) => {
     setOnlineUsers(prev => ({ ...prev, [userId]: false }));
   };
+
+  const handleOnlineUsersList = (users: string[]) => {
+    console.log("Syncing existing online users:", users);
+    const mapped: Record<string, boolean> = {};
+
+    users.forEach(id => { mapped[id] = true; });
+    setOnlineUsers(mapped);
+  };
     const onReceive = (msg: IChatMessage) => handleIncomingMessage(msg);
     const onSaved = (msg: IChatMessage) => handleMessageSaved(msg);
     const onRead = ({ chatKey }: { chatKey: string }) =>
@@ -266,6 +274,7 @@ export const useChatMessages = (
 
     socketService.onUserOnline(onUserOnline);
     socketService.onUserOffline(onUserOffline);
+    socketService.onOnlineUsers(handleOnlineUsersList);
     socketService.onReceiveMessage(onReceive);
     socketService.onMessageSaved(onSaved);
     socketService.onMessagesRead(onRead);
@@ -275,6 +284,7 @@ export const useChatMessages = (
     return () => {
       socketService.offUserOnline(onUserOnline);
       socketService.offUserOffline(onUserOffline);
+      socketService.offOnlineUsers(handleOnlineUsersList);
       socketService.socket?.off("receiveMessage", onReceive);
       socketService.socket?.off("messageSaved", onSaved);
       socketService.socket?.off("messagesRead", onRead);

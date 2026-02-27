@@ -22,7 +22,7 @@ import Chat from "../pages/User/Chat";
 import MentorDashBoard from "../Components/User/Profile/MentorDashboard/MentorDashBoard";
 import ExploreMentors from "../pages/User/Explore/Explore";
 import Profile from "../pages/User/Profile/Profile";
-import { PublicRoute } from "./Public.Route";
+import { PublicRoute } from "./Public.Routes";
 
 const UserRoutes = () => (
   <>

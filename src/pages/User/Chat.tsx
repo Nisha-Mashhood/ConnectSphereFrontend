@@ -9,19 +9,15 @@ import ChatHeader from "../../Components/User/Common/Chat/ChatHeader";
 import ChatDetailsSidebar from "../../Components/User/Common/Chat/ChatDetailsSideBar/ChatDetailsSidebar";
 import ChatMessages from "../../Components/User/Common/Chat/ChatMessages/ChatMessages";
 import ChatInput from "../../Components/User/Common/Chat/ChatInput/ChatInput";
+import { getChatKey } from "../../Components/User/Common/Chat/utils/contactUtils";
 
 import { useChatContacts } from "../../Hooks/User/Chat/useChatContacts";
 import { useChatMessages } from "../../Hooks/User/Chat/useChatMessages";
 import { useChatNotifications } from "../../Hooks/User/Chat/useChatNotifications";
-
-import {
-  setIsInChatComponent,
-  setActiveChatKey,
-} from "../../redux/Slice/notificationSlice";
-
-import { getChatKey } from "../../Components/User/Common/Chat/utils/contactUtils";
 import { useChatCall } from "../../Hooks/User/Chat/OneToOneCall/useChatCall";
 import { useGroupCall } from "../../Hooks/User/Chat/GroupCall/useChatGroupCall";
+
+import { setActiveChatKey } from "../../redux/Slice/notificationSlice";
 
 
 const Chat: React.FC = () => {
@@ -81,12 +77,11 @@ const Chat: React.FC = () => {
     if (!currentUser?.id) return;
     console.log("Inside chat container");
     socketService.emitChatOnline(currentUser.id);
-    dispatch(setIsInChatComponent(true));
     refetchUnreadCounts();
 
     return () => {
+      console.log("❄ Leaving chat → emitting offline");
       socketService.emitChatOffline(currentUser.id);
-      dispatch(setIsInChatComponent(false));
       dispatch(setActiveChatKey(null));
       socketService.leaveChat(currentUser.id);
     };

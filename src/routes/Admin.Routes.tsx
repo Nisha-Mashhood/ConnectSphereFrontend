@@ -24,8 +24,8 @@ import SalesReport from "../pages/Admin/SalesReport";
 
 const AdminRoutes = () => (
   <Routes>
-    <Route path="/admin/login" element={<AdminLogin />} />
-    <Route path="/admin" element={<AdminLayout />}>
+    <Route path="login" element={<AdminLogin />} />
+    <Route element={<AdminLayout />}>
       <Route element={<AdminPrivateRoute />}>
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="profile/:adminId" element={<AdminProfile />} />

@@ -1,3 +1,4 @@
+import { Routes, Route } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AdminRoutes, UserRoutes } from "./routes/routes";
 import { Toaster } from "react-hot-toast";
@@ -21,9 +22,8 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { currentUser, needsReviewPrompt } = useSelector((state: RootState) => state.user);
-  const isAdminRoute = location.pathname.startsWith("/admin");
-  const { isModalOpen, setIsModalOpen } = useReviewModalTimer(needsReviewPrompt, isAdminRoute);
+  const { currentUser, isAdmin, needsReviewPrompt } = useSelector((state: RootState) => state.user);
+  const { isModalOpen, setIsModalOpen } = useReviewModalTimer(needsReviewPrompt, isAdmin);
 
   useEffect(() => {
     setupInterceptors(navigate);
@@ -33,6 +33,7 @@ function App() {
     const isChatRoute = location.pathname.startsWith("/chat");
     dispatch(setIsInChatComponent(isChatRoute));
   }, [dispatch, location.pathname]);
+
 
   useEffect(() => {
   dispatch(clearIncomingCall());
@@ -47,9 +48,12 @@ function App() {
           <GlobalGroupCallOverlay /> 
             <GlobalRingtone /> 
               <IncomingCallBar />
-                {isAdminRoute ? <AdminRoutes /> : <UserRoutes />}
-    
-              {currentUser && !isAdminRoute && (
+                <Routes>
+                  <Route path="/admin/*" element={<AdminRoutes />} />
+                  <Route path="/*" element={<UserRoutes />} />
+                </Routes>
+                
+              {currentUser && !isAdmin && (
                 <ReviewModal
                   isOpen={isModalOpen}
                   userId={currentUser._id}

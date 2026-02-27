@@ -15,8 +15,6 @@ function AdminPrivateRoute() {
                 });
                 return <Navigate to="/forbidden" state={{ from: location }} replace />;
               }
-
-
         return <Outlet />;
 }
 

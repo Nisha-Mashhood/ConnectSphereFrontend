@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { RootState } from "../../../redux/store";
@@ -17,6 +17,11 @@ const SocketHandler: React.FC = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { isInChatComponent } = useSelector((state: RootState) => state.notification);
+  const isInChatRef = useRef(isInChatComponent);
+
+  useEffect(() => {
+    isInChatRef.current = isInChatComponent;
+  }, [isInChatComponent]);
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -53,7 +58,7 @@ const SocketHandler: React.FC = () => {
       if (
         notification.type === "task_reminder" &&
         notification.status === "unread" &&
-        !isInChatComponent
+        !isInChatRef.current
       ) {
         toast.success(notification.content, {
           id: notification.id,
@@ -112,7 +117,7 @@ const SocketHandler: React.FC = () => {
       socketService.socket?.off("notification.read", handleNotificationRead);
       socketService.socket?.off("notification.updated", handleNotificationUpdated);
     };
-  }, [currentUser?.id, dispatch, isInChatComponent]);
+  }, [currentUser?.id, dispatch]);
 
   return null;
 };

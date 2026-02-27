@@ -86,9 +86,7 @@ export function useOTPVerification() {
         throw new Error("OTP verification failed");
       }
 
-
       const purpose = otpContext.purpose;
-
 
       /* ---------------- LOGIN FLOW ---------------- */
       if (purpose === "login") {
@@ -97,21 +95,21 @@ export function useOTPVerification() {
           localStorage.setItem("accessToken", accessToken);
         }
         localStorage.setItem("userId", user.id);
-        dispatch(signinSuccess({ user, needsReviewPrompt }));
-
+        
         /* ---------- ADMIN LOGIN ---------- */
         if (user.role === "admin") {
           dispatch(setIsAdmin(user));
           toast.success("Welcome, Admin!");
           navigate("/admin/dashboard", { replace: true });
           setTimeout(() => {
-          dispatch(clearOtpContext());
-        }, 100);
+            dispatch(clearOtpContext());
+          }, 100);
           return;
         }
-
+        
         /* ---------- USER / MENTOR LOGIN ---------- */
         dispatch(unsetIsAdmin());
+        dispatch(signinSuccess({ user, needsReviewPrompt }));
         let mentorDetails = null;
         if (user.role === "mentor") {
           mentorDetails = await dispatch(fetchMentorDetails(user.id)).unwrap();
