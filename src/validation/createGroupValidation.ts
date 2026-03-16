@@ -6,7 +6,6 @@ import {
   noMultipleSpaces,
   noExcessiveRepeats,
   noStartingSpecialChar,
-  priceRule,
   atLeastOneSlot,
   futureDate,
   intBetween,
@@ -40,7 +39,14 @@ export const createGroupSchema: Yup.ObjectSchema<GroupFormValues> = Yup.object({
     .concat(noMultipleSpaces())
     .concat(noExcessiveRepeats(3)),
 
-  price: priceRule(0, 100_000),
+  price: Yup.number()
+  .min(0, "Price cannot be negative")
+  .test(
+    "min-stripe-amount",
+    "Minimum payable amount is ₹50",
+    (value) => value === 0 || (value ?? 0) >= 50
+  )
+  .max(100000, "Price cannot exceed ₹100000"),
 
   maxMembers: intBetween(2, 4, "Maximum members"),
 

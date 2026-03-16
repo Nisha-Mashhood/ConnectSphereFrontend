@@ -96,6 +96,7 @@ const CreateGroupForm = () => {
 
             <NumberField
               label="Price (optional)"
+              description="Enter 0 for free group. Minimum paid group price is ₹50."
               min={0}
               registration={register("price", { valueAsNumber: true })}
               error={errors.price}
